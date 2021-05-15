@@ -121,6 +121,9 @@
           - "--providers.kubernetesgateway"
           - "--experimental.kubernetesgateway"
           {{- end }}
+          {{- if .Values.experimental.http3.enabled }}
+          - "--experimental.http3"
+          {{- end }}
           {{- if and .Values.rbac.enabled .Values.rbac.namespaced }}
           {{- if .Values.providers.kubernetesCRD.enabled }}
           - "--providers.kubernetescrd.namespaces={{ template "providers.kubernetesCRD.namespaces" . }}"

@@ -201,6 +201,16 @@ tests:
           content:
             key: "RSA"
             operator: "Destructor"
+  - it: should have http3 option passed
+    set:
+      experimental:
+        http3:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content:
+            "--experimental.http3"
   - it: should have all k8s provider enabled when gateway provider is enabled
     set:
       experimental:

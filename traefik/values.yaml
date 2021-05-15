@@ -75,6 +75,8 @@ pilot:
 
 # Enable experimental features
 experimental:
+  http3:
+    enabled: false
   plugins:
     enabled: false
   kubernetesGateway:
