@@ -90,3 +90,27 @@ tests:
       - equal:
           path: items[1].spec.ports[0].protocol
           value: UDP
+  - it: it should create both tcp and udp ports for exposed http3 entrypoint
+    set:
+      ports:
+        uniquePort:
+          port: 8081
+          expose: true
+          exposedPort: 80
+          protocol: TCP
+          http3: true
+    asserts:
+      - contains:
+          path: items[0].spec.ports
+          content:
+            name: uniquePort
+            protocol: TCP
+            port: 80
+            targetPort: uniquePort
+      - contains:
+          path: items[1].spec.ports
+          content:
+            name: uniquePort
+            protocol: UDP
+            port: 80
+            targetPort: uniquePort-udp

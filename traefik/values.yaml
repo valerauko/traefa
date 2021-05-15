@@ -75,6 +75,8 @@ pilot:
 
 # Enable experimental features
 experimental:
+  http3:
+    enabled: false
   plugins:
     enabled: false
   kubernetesGateway:
@@ -268,6 +270,8 @@ ports:
     exposedPort: 443
     # The port protocol (TCP/UDP)
     protocol: TCP
+    # Whether to enable HTTP3. If enabled, both TCP and UDP will be served.
+    http3: false
     # nodePort: 32443
     # Set TLS at the entrypoint
     # https://doc.traefik.io/traefik/routing/entrypoints/#tls

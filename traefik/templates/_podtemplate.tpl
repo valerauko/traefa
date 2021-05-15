@@ -65,6 +65,17 @@
           hostIP: {{ $config.hostIP }}
           {{- end }}
           protocol: {{ default "TCP" $config.protocol | quote }}
+        {{- if $config.http3 }}
+        - name: {{ printf "%s-udp" $name | quote }}
+          containerPort: {{ $config.port }}
+          {{- if $config.hostPort }}
+          hostPort: {{ $config.hostPort }}
+          {{- end }}
+          {{- if $config.hostIP }}
+          hostIP: {{ $config.hostIP }}
+          {{- end }}
+          protocol: "UDP"
+        {{- end }}
         {{- end }}
         {{- end }}
         {{- with .Values.securityContext }}
@@ -121,6 +132,9 @@
           - "--providers.kubernetesgateway"
           - "--experimental.kubernetesgateway"
           {{- end }}
+          {{- if .Values.experimental.http3.enabled }}
+          - "--experimental.http3"
+          {{- end }}
           {{- if and .Values.rbac.enabled .Values.rbac.namespaced }}
           {{- if .Values.providers.kubernetesCRD.enabled }}
           - "--providers.kubernetescrd.namespaces={{ template "providers.kubernetesCRD.namespaces" . }}"
@@ -130,6 +144,10 @@
           {{- end }}
           {{- end }}
           {{- range $entrypoint, $config := $.Values.ports }}
+          {{- if $config.http3 }}
+          - "--entrypoints.{{ $entrypoint }}.http3.enabled"
+          - "--entrypoints.{{ $entrypoint }}.http3.advertisedAs=:{{ $config.exposedPort | default $config.port }}"
+          {{- end }}
           {{- if $config.redirectTo }}
           {{- $toPort := index $.Values.ports $config.redirectTo }}
           - "--entrypoints.{{ $entrypoint }}.http.redirections.entryPoint.to=:{{ $toPort.exposedPort }}"
