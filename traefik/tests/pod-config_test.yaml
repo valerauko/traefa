@@ -225,6 +225,33 @@ tests:
             name: "websecure-udp"
             containerPort: 8443
             protocol: "UDP"
+  - it: should enable and advertise http3 for the entrypoint
+    set:
+      ports:
+        websecure:
+          port: 8443
+          exposedPort: 443
+          http3: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content:
+            "--entrypoints.websecure.http3.enabled"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content:
+            "--entrypoints.websecure.http3.advertisedAs=:443"
+  - it: should fall back advertising http3 at port if exposedPort is not specified
+    set:
+      ports:
+        http3entrypoint:
+          port: 8443
+          http3: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content:
+            "--entrypoints.http3entrypoint.http3.advertisedAs=:8443"
   - it: should have all k8s provider enabled when gateway provider is enabled
     set:
       experimental:

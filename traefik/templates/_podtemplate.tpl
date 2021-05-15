@@ -144,6 +144,10 @@
           {{- end }}
           {{- end }}
           {{- range $entrypoint, $config := $.Values.ports }}
+          {{- if $config.http3 }}
+          - "--entrypoints.{{ $entrypoint }}.http3.enabled"
+          - "--entrypoints.{{ $entrypoint }}.http3.advertisedAs=:{{ $config.exposedPort | default $config.port }}"
+          {{- end }}
           {{- if $config.redirectTo }}
           {{- $toPort := index $.Values.ports $config.redirectTo }}
           - "--entrypoints.{{ $entrypoint }}.http.redirections.entryPoint.to=:{{ $toPort.exposedPort }}"
