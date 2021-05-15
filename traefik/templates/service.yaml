@@ -5,6 +5,9 @@
 {{- range $name, $config := .Values.ports }}
   {{- if eq (toString $config.protocol) "UDP" }}
     {{ $_ := set $udpPorts $name $config }}
+  {{- else if $config.http3 }}
+    {{ $_ := set $udpPorts $name $config }}
+    {{ $_ := set $tcpPorts $name $config }}
   {{- else }}
     {{ $_ := set $tcpPorts $name $config }}
   {{- end }}
@@ -91,8 +94,12 @@ items:
       {{- if $config.expose }}
       - port: {{ default $config.port $config.exposedPort }}
         name: {{ $name }}
-        targetPort: {{ $name | quote }}
-        protocol: {{ default "UDP" $config.protocol | quote }}
+        targetPort: {{ if $config.http3 -}}
+          {{ printf "%s-udp" $name | quote }}
+        {{- else -}}
+          {{ $name | quote }}
+        {{- end }}
+        protocol: "UDP"
         {{- if $config.nodePort }}
         nodePort: {{ $config.nodePort }}
         {{- end }}
