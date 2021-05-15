@@ -270,6 +270,7 @@ ports:
     exposedPort: 443
     # The port protocol (TCP/UDP)
     protocol: TCP
+    http3: true
     # nodePort: 32443
     # Set TLS at the entrypoint
     # https://doc.traefik.io/traefik/routing/entrypoints/#tls

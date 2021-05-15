@@ -65,6 +65,17 @@
           hostIP: {{ $config.hostIP }}
           {{- end }}
           protocol: {{ default "TCP" $config.protocol | quote }}
+        {{- if $config.http3 }}
+        - name: {{ printf "%s-udp" $name | quote }}
+          containerPort: {{ $config.port }}
+          {{- if $config.hostPort }}
+          hostPort: {{ $config.hostPort }}
+          {{- end }}
+          {{- if $config.hostIP }}
+          hostIP: {{ $config.hostIP }}
+          {{- end }}
+          protocol: "UDP"
+        {{- end }}
         {{- end }}
         {{- end }}
         {{- with .Values.securityContext }}

@@ -211,6 +211,20 @@ tests:
           path: spec.template.spec.containers[0].args
           content:
             "--experimental.http3"
+  - it: should have an udp port open for http3-enabled endpoints
+    set:
+      ports:
+        websecure:
+          port: 8443
+          exposedPort: 443
+          http3: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: "websecure-udp"
+            containerPort: 8443
+            protocol: "UDP"
   - it: should have all k8s provider enabled when gateway provider is enabled
     set:
       experimental:
